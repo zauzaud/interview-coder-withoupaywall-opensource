@@ -1,33 +1,38 @@
-import React, { useState, useEffect, useRef } from "react"
-import { useToast } from "../../contexts/toast"
-import { Screenshot } from "../../types/screenshots"
-import { supabase } from "../../lib/supabase"
-import { LanguageSelector } from "../shared/LanguageSelector"
-import { COMMAND_KEY } from "../../utils/platform"
+import React, { useState, useEffect, useRef } from "react";
+import { useToast } from "../../contexts/toast";
+import { Screenshot } from "../../types/screenshots";
+import { supabase } from "../../lib/supabase";
+import { LanguageSelector } from "../shared/LanguageSelector";
+import { COMMAND_KEY } from "../../utils/platform";
 
 export interface SolutionCommandsProps {
-  onTooltipVisibilityChange: (visible: boolean, height: number) => void
-  isProcessing: boolean
-  screenshots?: Screenshot[]
-  extraScreenshots?: Screenshot[]
-  credits: number
-  currentLanguage: string
-  setLanguage: (language: string) => void
+  onTooltipVisibilityChange: (visible: boolean, height: number) => void;
+  isProcessing: boolean;
+  screenshots?: Screenshot[];
+  extraScreenshots?: Screenshot[];
+  credits: number;
+  currentLanguage: string;
+  setLanguage: (language: string) => void;
 }
 
 const handleSignOut = async () => {
   try {
     // Clear any local storage or electron-specific data first
-    localStorage.clear()
-    sessionStorage.clear()
+    localStorage.clear();
+    sessionStorage.clear();
 
-    // Then sign out from Supabase
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+    // Clear the API key in the configuration
+    await window.electronAPI.updateConfig({
+      apiKey: "",
+    });
+
+    // Then sign out from Supabase (this é mantido por compatibilidade, mesmo não sendo mais usado)
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
   } catch (err) {
-    console.error("Error signing out:", err)
+    console.error("Error signing out:", err);
   }
-}
+};
 
 const SolutionCommands: React.FC<SolutionCommandsProps> = ({
   onTooltipVisibilityChange,
@@ -35,29 +40,29 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
   extraScreenshots = [],
   credits,
   currentLanguage,
-  setLanguage
+  setLanguage,
 }) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false)
-  const tooltipRef = useRef<HTMLDivElement>(null)
-  const { showToast } = useToast()
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const tooltipRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
 
   useEffect(() => {
     if (onTooltipVisibilityChange) {
-      let tooltipHeight = 0
+      let tooltipHeight = 0;
       if (tooltipRef.current && isTooltipVisible) {
-        tooltipHeight = tooltipRef.current.offsetHeight + 10 // Adjust if necessary
+        tooltipHeight = tooltipRef.current.offsetHeight + 10; // Adjust if necessary
       }
-      onTooltipVisibilityChange(isTooltipVisible, tooltipHeight)
+      onTooltipVisibilityChange(isTooltipVisible, tooltipHeight);
     }
-  }, [isTooltipVisible, onTooltipVisibilityChange])
+  }, [isTooltipVisible, onTooltipVisibilityChange]);
 
   const handleMouseEnter = () => {
-    setIsTooltipVisible(true)
-  }
+    setIsTooltipVisible(true);
+  };
 
   const handleMouseLeave = () => {
-    setIsTooltipVisible(false)
-  }
+    setIsTooltipVisible(false);
+  };
 
   return (
     <div>
@@ -68,18 +73,20 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
             className="flex items-center gap-2 cursor-pointer rounded px-2 py-1.5 hover:bg-white/10 transition-colors"
             onClick={async () => {
               try {
-                const result = await window.electronAPI.toggleMainWindow()
+                const result = await window.electronAPI.toggleMainWindow();
                 if (!result.success) {
-                  console.error("Failed to toggle window:", result.error)
-                  showToast("Error", "Failed to toggle window", "error")
+                  console.error("Failed to toggle window:", result.error);
+                  showToast("Erro", "Falha ao alternar a janela", "error");
                 }
               } catch (error) {
-                console.error("Error toggling window:", error)
-                showToast("Error", "Failed to toggle window", "error")
+                console.error("Error toggling window:", error);
+                showToast("Erro", "Falha ao alternar a janela", "error");
               }
             }}
           >
-            <span className="text-[11px] leading-none">Show/Hide</span>
+            <span className="text-[11px] leading-none truncate">
+              Mostrar/Ocultar
+            </span>
             <div className="flex gap-1">
               <button className="bg-white/10 rounded-md px-1.5 py-1 text-[11px] leading-none text-white/70">
                 {COMMAND_KEY}
@@ -97,21 +104,21 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                 className="flex items-center gap-2 cursor-pointer rounded px-2 py-1.5 hover:bg-white/10 transition-colors"
                 onClick={async () => {
                   try {
-                    const result = await window.electronAPI.triggerScreenshot()
+                    const result = await window.electronAPI.triggerScreenshot();
                     if (!result.success) {
-                      console.error("Failed to take screenshot:", result.error)
-                      showToast("Error", "Failed to take screenshot", "error")
+                      console.error("Failed to take screenshot:", result.error);
+                      showToast("Erro", "Falha ao capturar a tela", "error");
                     }
                   } catch (error) {
-                    console.error("Error taking screenshot:", error)
-                    showToast("Error", "Failed to take screenshot", "error")
+                    console.error("Error taking screenshot:", error);
+                    showToast("Erro", "Falha ao capturar a tela", "error");
                   }
                 }}
               >
                 <span className="text-[11px] leading-none truncate">
                   {extraScreenshots.length === 0
-                    ? "Screenshot your code"
-                    : "Screenshot"}
+                    ? "Capturar nova tela"
+                    : "Capturar tela"}
                 </span>
                 <div className="flex gap-1">
                   <button className="bg-white/10 rounded-md px-1.5 py-1 text-[11px] leading-none text-white/70">
@@ -129,29 +136,31 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                   onClick={async () => {
                     try {
                       const result =
-                        await window.electronAPI.triggerProcessScreenshots()
+                        await window.electronAPI.triggerProcessScreenshots();
                       if (!result.success) {
                         console.error(
                           "Failed to process screenshots:",
                           result.error
-                        )
+                        );
                         showToast(
-                          "Error",
-                          "Failed to process screenshots",
+                          "Erro",
+                          "Falha ao processar as capturas de tela",
                           "error"
-                        )
+                        );
                       }
                     } catch (error) {
-                      console.error("Error processing screenshots:", error)
+                      console.error("Error processing screenshots:", error);
                       showToast(
-                        "Error",
-                        "Failed to process screenshots",
+                        "Erro",
+                        "Falha ao processar as capturas de tela",
                         "error"
-                      )
+                      );
                     }
                   }}
                 >
-                  <span className="text-[11px] leading-none">Debug</span>
+                  <span className="text-[11px] leading-none">
+                    Análise Adicional
+                  </span>
                   <div className="flex gap-1">
                     <button className="bg-white/10 rounded-md px-1.5 py-1 text-[11px] leading-none text-white/70">
                       {COMMAND_KEY}
@@ -170,18 +179,18 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
             className="flex items-center gap-2 cursor-pointer rounded px-2 py-1.5 hover:bg-white/10 transition-colors"
             onClick={async () => {
               try {
-                const result = await window.electronAPI.triggerReset()
+                const result = await window.electronAPI.triggerReset();
                 if (!result.success) {
-                  console.error("Failed to reset:", result.error)
-                  showToast("Error", "Failed to reset", "error")
+                  console.error("Failed to reset:", result.error);
+                  showToast("Erro", "Falha ao reiniciar", "error");
                 }
               } catch (error) {
-                console.error("Error resetting:", error)
-                showToast("Error", "Failed to reset", "error")
+                console.error("Error resetting:", error);
+                showToast("Erro", "Falha ao reiniciar", "error");
               }
             }}
           >
-            <span className="text-[11px] leading-none">Start Over</span>
+            <span className="text-[11px] leading-none">Recomeçar</span>
             <div className="flex gap-1">
               <button className="bg-white/10 rounded-md px-1.5 py-1 text-[11px] leading-none text-white/70">
                 {COMMAND_KEY}
@@ -230,7 +239,7 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                 <div className="p-3 text-xs bg-black/80 backdrop-blur-md rounded-lg border border-white/10 text-white/90 shadow-lg">
                   <div className="space-y-4">
                     <h3 className="font-medium whitespace-nowrap">
-                      Keyboard Shortcuts
+                      Atalhos de Teclado
                     </h3>
                     <div className="space-y-3">
                       {/* Show/Hide - Always visible */}
@@ -239,30 +248,32 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                         onClick={async () => {
                           try {
                             const result =
-                              await window.electronAPI.toggleMainWindow()
+                              await window.electronAPI.toggleMainWindow();
                             if (!result.success) {
                               console.error(
                                 "Failed to toggle window:",
                                 result.error
-                              )
+                              );
                               showToast(
-                                "Error",
-                                "Failed to toggle window",
+                                "Erro",
+                                "Falha ao alternar a janela",
                                 "error"
-                              )
+                              );
                             }
                           } catch (error) {
-                            console.error("Error toggling window:", error)
+                            console.error("Error toggling window:", error);
                             showToast(
-                              "Error",
-                              "Failed to toggle window",
+                              "Erro",
+                              "Falha ao alternar a janela",
                               "error"
-                            )
+                            );
                           }
                         }}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="truncate">Toggle Window</span>
+                          <span className="truncate">
+                            Alternar Visibilidade
+                          </span>
                           <div className="flex gap-1 flex-shrink-0">
                             <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] leading-none">
                               {COMMAND_KEY}
@@ -273,7 +284,7 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                           </div>
                         </div>
                         <p className="text-[10px] leading-relaxed text-white/70 truncate mt-1">
-                          Show or hide this window.
+                          Mostrar ou ocultar esta janela.
                         </p>
                       </div>
 
@@ -285,30 +296,33 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                             onClick={async () => {
                               try {
                                 const result =
-                                  await window.electronAPI.triggerScreenshot()
+                                  await window.electronAPI.triggerScreenshot();
                                 if (!result.success) {
                                   console.error(
                                     "Failed to take screenshot:",
                                     result.error
-                                  )
+                                  );
                                   showToast(
-                                    "Error",
-                                    "Failed to take screenshot",
+                                    "Erro",
+                                    "Falha ao capturar a tela",
                                     "error"
-                                  )
+                                  );
                                 }
                               } catch (error) {
-                                console.error("Error taking screenshot:", error)
+                                console.error(
+                                  "Error taking screenshot:",
+                                  error
+                                );
                                 showToast(
-                                  "Error",
-                                  "Failed to take screenshot",
+                                  "Erro",
+                                  "Falha ao capturar a tela",
                                   "error"
-                                )
+                                );
                               }
                             }}
                           >
                             <div className="flex items-center justify-between">
-                              <span className="truncate">Take Screenshot</span>
+                              <span className="truncate">Capturar Tela</span>
                               <div className="flex gap-1 flex-shrink-0">
                                 <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] leading-none">
                                   {COMMAND_KEY}
@@ -319,8 +333,8 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                               </div>
                             </div>
                             <p className="text-[10px] leading-relaxed text-white/70 truncate mt-1">
-                              Capture additional parts of the question or your
-                              solution for debugging help.
+                              Capture partes adicionais do conteúdo para obter
+                              análise adicional.
                             </p>
                           </div>
 
@@ -330,33 +344,35 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                               onClick={async () => {
                                 try {
                                   const result =
-                                    await window.electronAPI.triggerProcessScreenshots()
+                                    await window.electronAPI.triggerProcessScreenshots();
                                   if (!result.success) {
                                     console.error(
                                       "Failed to process screenshots:",
                                       result.error
-                                    )
+                                    );
                                     showToast(
-                                      "Error",
-                                      "Failed to process screenshots",
+                                      "Erro",
+                                      "Falha ao processar as capturas de tela",
                                       "error"
-                                    )
+                                    );
                                   }
                                 } catch (error) {
                                   console.error(
                                     "Error processing screenshots:",
                                     error
-                                  )
+                                  );
                                   showToast(
-                                    "Error",
-                                    "Failed to process screenshots",
+                                    "Erro",
+                                    "Falha ao processar as capturas de tela",
                                     "error"
-                                  )
+                                  );
                                 }
                               }}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="truncate">Debug</span>
+                                <span className="truncate">
+                                  Análise Adicional
+                                </span>
                                 <div className="flex gap-1 flex-shrink-0">
                                   <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] leading-none">
                                     {COMMAND_KEY}
@@ -367,8 +383,8 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                                 </div>
                               </div>
                               <p className="text-[10px] leading-relaxed text-white/70 truncate mt-1">
-                                Generate new solutions based on all previous and
-                                newly added screenshots.
+                                Obter análise adicional com base em todas as
+                                capturas de tela anteriores e novas.
                               </p>
                             </div>
                           )}
@@ -381,19 +397,19 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                         onClick={async () => {
                           try {
                             const result =
-                              await window.electronAPI.triggerReset()
+                              await window.electronAPI.triggerReset();
                             if (!result.success) {
-                              console.error("Failed to reset:", result.error)
-                              showToast("Error", "Failed to reset", "error")
+                              console.error("Failed to reset:", result.error);
+                              showToast("Erro", "Falha ao reiniciar", "error");
                             }
                           } catch (error) {
-                            console.error("Error resetting:", error)
-                            showToast("Error", "Failed to reset", "error")
+                            console.error("Error resetting:", error);
+                            showToast("Erro", "Falha ao reiniciar", "error");
                           }
                         }}
                       >
                         <div className="flex items-center justify-between">
-                          <span className="truncate">Start Over</span>
+                          <span className="truncate">Recomeçar</span>
                           <div className="flex gap-1 flex-shrink-0">
                             <span className="bg-white/20 px-1.5 py-0.5 rounded text-[10px] leading-none">
                               {COMMAND_KEY}
@@ -404,7 +420,7 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                           </div>
                         </div>
                         <p className="text-[10px] leading-relaxed text-white/70 truncate mt-1">
-                          Start fresh with a new question.
+                          Começar uma nova análise do zero.
                         </p>
                       </div>
                     </div>
@@ -419,12 +435,14 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                       {/* API Key Settings */}
                       <div className="mb-3 px-2 space-y-1">
                         <div className="flex items-center justify-between text-[13px] font-medium text-white/90">
-                          <span>OpenAI API Settings</span>
+                          <span>Configurações da API</span>
                           <button
                             className="bg-white/10 hover:bg-white/20 px-2 py-1 rounded text-[11px]"
-                            onClick={() => window.electronAPI.openSettingsPortal()}
+                            onClick={() =>
+                              window.electronAPI.openSettingsPortal()
+                            }
                           >
-                            Settings
+                            Configurações
                           </button>
                         </div>
                       </div>
@@ -449,7 +467,7 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
                             <line x1="21" y1="12" x2="9" y2="12" />
                           </svg>
                         </div>
-                        Log Out
+                        Sair
                       </button>
                     </div>
                   </div>
@@ -460,7 +478,7 @@ const SolutionCommands: React.FC<SolutionCommandsProps> = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SolutionCommands
+export default SolutionCommands;
