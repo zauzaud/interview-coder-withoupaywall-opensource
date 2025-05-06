@@ -1,47 +1,47 @@
 @echo off
-echo === Interview Coder - Invisible Edition (No Paywall) ===
+echo === Auxiliar de Codigo - Edicao Invisivel (Sem Paywall) ===
 echo.
-echo IMPORTANT: This app is designed to be INVISIBLE by default!
-echo Use the keyboard shortcuts to control it:
+echo IMPORTANTE: Este aplicativo eh projetado para ser INVISIVEL por padrao!
+echo Use os atalhos de teclado para controla-lo:
 echo.
-echo - Toggle Visibility: Ctrl+B (or Cmd+B on Mac)
-echo - Take Screenshot: Ctrl+H
-echo - Process Screenshots: Ctrl+Enter
-echo - Move Window: Ctrl+Arrows (Left/Right/Up/Down)
-echo - Adjust Opacity: Ctrl+[ (decrease) / Ctrl+] (increase)
-echo - Reset View: Ctrl+R
-echo - Quit App: Ctrl+Q
+echo - Alternar Visibilidade: Ctrl+B (ou Cmd+B no Mac)
+echo - Tirar Screenshot: Ctrl+H
+echo - Processar Screenshots: Ctrl+Enter
+echo - Mover Janela: Ctrl+Arrows (Left/Right/Up/Down)
+echo - Ajustar Opacidade: Ctrl+[ (diminuir) / Ctrl+] (aumentar)
+echo - Resetar Visualizacao: Ctrl+R
+echo - Sair do Aplicativo: Ctrl+Q
 echo.
-echo When you press Ctrl+B, the window will toggle between visible and invisible.
-echo If movement shortcuts aren't working, try making the window visible first with Ctrl+B.
+echo Quando voce pressionar Ctrl+B, a janela alternara entre visivel e invisivel.
+echo Se os atalhos de movimento nao estao funcionando, tente torna-la visivel primeiro com Ctrl+B.
 echo.
 
 cd /D "%~dp0"
 
-echo === Step 1: Creating required directories... ===
+echo === Passo 1: Criando diretorios necessarios... ===
 mkdir "%APPDATA%\interview-coder-v1\temp" 2>nul
 mkdir "%APPDATA%\interview-coder-v1\cache" 2>nul
 mkdir "%APPDATA%\interview-coder-v1\screenshots" 2>nul
 mkdir "%APPDATA%\interview-coder-v1\extra_screenshots" 2>nul
 
-echo === Step 2: Cleaning previous builds... ===
-echo Removing old build files to ensure a fresh start...
+echo === Passo 2: Limpando builds anteriores... ===
+echo Removendo arquivos de builds anteriores para garantir um inicio limpo...
 rmdir /s /q dist dist-electron 2>nul
 del /q .env 2>nul
 
-echo === Step 3: Building application... ===
-echo This may take a moment...
+echo === Passo 3: Construindo o aplicativo... ===
+echo Isso pode levar um momento...
 call npm run build
 
-echo === Step 4: Launching in stealth mode... ===
-echo Remember: Press Ctrl+B to make it visible, Ctrl+[ and Ctrl+] to adjust opacity!
+echo === Passo 4: Iniciando no modo invisivel... ===
+echo Lembre-se: Pressione Ctrl+B para torna-lo visivel, Ctrl+[ e Ctrl+] para ajustar a opacidade!
 echo.
 set NODE_ENV=production
 start /B cmd /c "npx electron ./dist-electron/main.js"
 
-echo App is now running invisibly! Press Ctrl+B to make it visible.
+echo O aplicativo esta agora em execucao invisivelmente! Pressione Ctrl+B para torna-lo visivel.
 echo.
-echo If you encounter any issues:
-echo 1. Make sure you've installed dependencies with 'npm install'
-echo 2. Press Ctrl+B multiple times to toggle visibility
-echo 3. Check Task Manager to verify the app is running
+echo Se voce encontrar algum problema:
+echo 1. Certifique-se de ter instalado as dependencias com npm install
+echo 2. Pressione Ctrl+B varias vezes para alternar a visibilidade
+echo 3. Verifique o Gerenciador de Tarefas para verificar se o aplicativo esta em execucao

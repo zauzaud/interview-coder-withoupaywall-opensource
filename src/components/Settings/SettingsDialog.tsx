@@ -34,48 +34,48 @@ type ModelCategory = {
 const modelCategories: ModelCategory[] = [
   {
     key: "extractionModel",
-    title: "Problem Extraction",
+    title: "Extração de Problemas",
     description:
-      "Model used to analyze screenshots and extract problem details",
+      "Modelo usado para analisar screenshots e extrair detalhes do problema",
     openaiModels: [
       {
         id: "gpt-4o",
         name: "gpt-4o",
-        description: "Best overall performance for problem extraction",
+        description: "Melhor desempenho geral para extração de problemas",
       },
       {
         id: "gpt-4o-mini",
         name: "gpt-4o-mini",
-        description: "Faster, more cost-effective option",
+        description: "Opção mais rápida e econômica",
       },
     ],
     geminiModels: [
       {
         id: "gemini-1.5-pro",
         name: "Gemini 1.5 Pro",
-        description: "Best overall performance for problem extraction",
+        description: "Melhor desempenho geral para extração de problemas",
       },
       {
         id: "gemini-2.0-flash",
         name: "Gemini 2.0 Flash",
-        description: "Faster, more cost-effective option",
+        description: "Opção mais rápida e econômica",
       },
     ],
     anthropicModels: [
       {
         id: "claude-3-7-sonnet-20250219",
         name: "Claude 3.7 Sonnet",
-        description: "Best overall performance for problem extraction",
+        description: "Melhor desempenho geral para extração de problemas",
       },
       {
         id: "claude-3-5-sonnet-20241022",
         name: "Claude 3.5 Sonnet",
-        description: "Balanced performance and speed",
+        description: "Desempenho equilibrado e velocidade",
       },
       {
         id: "claude-3-opus-20240229",
         name: "Claude 3 Opus",
-        description: "Top-level intelligence, fluency, and understanding",
+        description: "Inteligência de nível superior, fluência e compreensão",
       },
     ],
   },
@@ -87,87 +87,87 @@ const modelCategories: ModelCategory[] = [
       {
         id: "gpt-4o",
         name: "gpt-4o",
-        description: "Strong overall performance for coding tasks",
+        description: "Melhor desempenho geral para tarefas de codificação",
       },
       {
         id: "gpt-4o-mini",
         name: "gpt-4o-mini",
-        description: "Faster, more cost-effective option",
+        description: "Opção mais rápida e econômica",
       },
     ],
     geminiModels: [
       {
         id: "gemini-1.5-pro",
         name: "Gemini 1.5 Pro",
-        description: "Strong overall performance for coding tasks",
+        description: "Melhor desempenho geral para tarefas de codificação",
       },
       {
         id: "gemini-2.0-flash",
         name: "Gemini 2.0 Flash",
-        description: "Faster, more cost-effective option",
+        description: "Opção mais rápida e econômica",
       },
     ],
     anthropicModels: [
       {
         id: "claude-3-7-sonnet-20250219",
         name: "Claude 3.7 Sonnet",
-        description: "Strong overall performance for coding tasks",
+        description: "Melhor desempenho geral para tarefas de codificação",
       },
       {
         id: "claude-3-5-sonnet-20241022",
         name: "Claude 3.5 Sonnet",
-        description: "Balanced performance and speed",
+        description: "Desempenho equilibrado e velocidade",
       },
       {
         id: "claude-3-opus-20240229",
         name: "Claude 3 Opus",
-        description: "Top-level intelligence, fluency, and understanding",
+        description: "Inteligência de nível superior, fluência e compreensão",
       },
     ],
   },
   {
     key: "debuggingModel",
-    title: "Debugging",
-    description: "Model used to debug and improve solutions",
+    title: "Debug",
+    description: "Modelo usado para depurar e melhorar soluções",
     openaiModels: [
       {
         id: "gpt-4o",
         name: "gpt-4o",
-        description: "Best for analyzing code and error messages",
+        description: "Melhor para analisar código e mensagens de erro",
       },
       {
         id: "gpt-4o-mini",
         name: "gpt-4o-mini",
-        description: "Faster, more cost-effective option",
+        description: "Opção mais rápida e econômica",
       },
     ],
     geminiModels: [
       {
         id: "gemini-1.5-pro",
         name: "Gemini 1.5 Pro",
-        description: "Best for analyzing code and error messages",
+        description: "Melhor para analisar código e mensagens de erro",
       },
       {
         id: "gemini-2.0-flash",
         name: "Gemini 2.0 Flash",
-        description: "Faster, more cost-effective option",
+        description: "Opção mais rápida e econômica",
       },
     ],
     anthropicModels: [
       {
         id: "claude-3-7-sonnet-20250219",
         name: "Claude 3.7 Sonnet",
-        description: "Best for analyzing code and error messages",
+        description: "Melhor para analisar código e mensagens de erro",
       },
       {
         id: "claude-3-5-sonnet-20241022",
         name: "Claude 3.5 Sonnet",
-        description: "Balanced performance and speed",
+        description: "Desempenho equilibrado e velocidade",
       },
       {
         id: "claude-3-opus-20240229",
         name: "Claude 3 Opus",
-        description: "Top-level intelligence, fluency, and understanding",
+        description: "Inteligência de nível superior, fluência e compreensão",
       },
     ],
   },
@@ -270,7 +270,7 @@ export function SettingsDialog({
       });
 
       if (result) {
-        showToast("Success", "Settings saved successfully", "success");
+        showToast("Sucesso", "Configurações salvas com sucesso", "success");
         handleOpenChange(false);
 
         // Force reload the app to apply the API key
@@ -280,7 +280,7 @@ export function SettingsDialog({
       }
     } catch (error) {
       console.error("Failed to save settings:", error);
-      showToast("Error", "Failed to save settings", "error");
+      showToast("Erro", "Falha ao salvar configurações", "error");
     } finally {
       setIsLoading(false);
     }
